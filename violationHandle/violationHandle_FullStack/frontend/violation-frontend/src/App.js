@@ -87,7 +87,7 @@ const App = () => {
             // 檢查 AI 辨識結果
             if (aiResult.needsManualReview || 
                 !aiResult.aiLicensePlate || 
-                aiResult.aiLicensePlate.length < 5) {  // 假設正常車牌至少5字元
+                aiResult.aiLicensePlate.length < 5) {  // 假設正常車牌至少5字元<<台灣車牌很多種，也4字元的(大貨車)
                 
                 setComparisonStatus('需要人工辨識');
                 setResultData({

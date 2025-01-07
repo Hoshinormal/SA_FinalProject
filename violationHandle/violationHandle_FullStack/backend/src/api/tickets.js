@@ -28,4 +28,46 @@ router.post('/', async (req, res) => {
     }
 });
 
+// GET all tickets or filter by licensePlate
+router.get('/by-license', async (req, res) => {
+    const { licensePlate } = req.query;
+    if (!licensePlate) {
+        return res.status(400).json({ message: '車牌號碼為必填項目' });
+    }
+
+    try {
+        const query = `
+            SELECT 
+                t.TicketID, 
+                t.ViolationID, 
+                t.FineAmount, 
+                t.CompletionTime, 
+                t.NotificationStatus, 
+                v.LicensePlate, 
+                v.VehicleType, 
+                v.VehicleColor 
+            FROM 
+                Ticket t
+            JOIN 
+                vehicleinfo v 
+            ON 
+                t.ViolationID = v.ViolationID
+            WHERE 
+                v.LicensePlate = ?
+        `;
+        const [rows] = await db.query(query, [licensePlate]);
+
+        // 如果有 licensePlate，則添加過濾條件
+        if (rows.length===0) {
+            return res.status(404).json({ message: '找不到指定的罰單' });
+        }
+
+        res.json(rows);
+    } catch (error) {
+        console.error('查詢API發生錯誤', error);
+        res.status(500).json({ message: '伺服器發生錯誤', error: error.message });
+    }
+});
+
+
 module.exports = router;

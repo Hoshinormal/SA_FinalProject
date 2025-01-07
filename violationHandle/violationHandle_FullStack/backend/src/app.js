@@ -19,7 +19,9 @@ const cors = require('cors');
 // 引入各個功能模塊的路由處理器
 const path = require('path');
 const manualRoutes = require('./routes/manualRoutes');    // 人工審核路由
-const ticketRoutes = require('./routes/ticketRoutes');    // 罰單處理路由
+// const ticketRoutes = require('./routes/ticketRoutes');    // 罰單處理路由
+const ticketRoutes = require('./api/tickets');
+
 const violationRoutes = require('./routes/violationRoutes'); // 違規處理路由
 const aiRoutes = require('./routes/aiRoutes');           // AI辨識路由
 const vehicleInfoRoutes = require('./api/vehicleInfo');   // 車輛信息路由
@@ -54,5 +56,26 @@ app.use('/api/ai', aiRoutes);
 app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, '../../frontend/violation-frontend/build', 'index.html'));
 });
+
+
+app.get('/api/tickets', async (req, res) => {
+    const { licensePlate } = req.query;
+    if (!licensePlate) {
+        return res.status(400).json({ error: '車牌號碼是必填的' });
+    }
+    try {
+        const results = await db.query(
+            'SELECT * FROM airecognition WHERE LicensePlate = ?',
+            [licensePlate]
+        );
+        res.json(results);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: '查詢資料時出現錯誤' });
+    }
+});
+
+
+
 
 module.exports = app;

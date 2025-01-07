@@ -1,4 +1,5 @@
 import React,{useState} from 'react';
+import ReactDOM from 'react-dom/client';
 import SearchTicketPage from './SearchTicketPage'; 
 
 
@@ -18,17 +19,27 @@ const TicketPage = ({ ticketData, onClose }) => {
             hour12: false
         });
     }
-    const [showSearchPage, setShowSearchPage] = useState(false);
+    //const [showSearchPage, setShowSearchPage] = useState(false);
+
     const handleConfirmNotification =() => {
-        setShowSearchPage(true);
+        const newWindow = window.open('', '_blank');
+        if (newWindow) {
+            newWindow.document.title = '罰單查詢系統';
 
+            // 在新分頁中加入一個 div 作為 React 的根元素
+            const rootDiv = newWindow.document.createElement('div');
+            newWindow.document.body.appendChild(rootDiv);
 
-
-
-        
-    };
-    if (showSearchPage) {
-        return <SearchTicketPage onclose={() => setShowSearchPage(false)} />;
+            // 在新分頁中渲染 React 組件
+            const root = ReactDOM.createRoot(rootDiv);
+            root.render(
+                <React.StrictMode>
+                    <SearchTicketPage />
+                </React.StrictMode>
+            );
+        } else {
+            console.error('無法打開新分頁');
+        }
     };
 
 
@@ -62,7 +73,7 @@ const TicketPage = ({ ticketData, onClose }) => {
                         <p>處理狀態: {ticketData.NotificationStatus ? '罰單已通知車主' : '罰單尚未通知車主'}</p>
                     </div>
                 ) : (
-                    <p>載入罰單資料中...</p>
+                    <p>無罰單資料</p>
                 )}
                 <button
                     onClick={onClose}
