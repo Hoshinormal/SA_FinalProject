@@ -1,4 +1,6 @@
-import React from 'react';
+import React,{useState} from 'react';
+import SearchTicketPage from './SearchTicketPage'; 
+
 
 const TicketPage = ({ ticketData, onClose }) => {
     // 格式化日期的函數
@@ -15,7 +17,20 @@ const TicketPage = ({ ticketData, onClose }) => {
             second: '2-digit',
             hour12: false
         });
+    }
+    const [showSearchPage, setShowSearchPage] = useState(false);
+    const handleConfirmNotification =() => {
+        setShowSearchPage(true);
+
+
+
+
+        
     };
+    if (showSearchPage) {
+        return <SearchTicketPage onclose={() => setShowSearchPage(false)} />;
+    };
+
 
     return (
         <div style={{
@@ -54,13 +69,27 @@ const TicketPage = ({ ticketData, onClose }) => {
                     style={{
                         marginTop: '20px',
                         padding: '10px 20px',
-                        backgroundColor: '#4CAF50',
+                        backgroundColor: 'red',
                         color: 'white',
                         border: 'none',
                         borderRadius: '5px',
                         cursor: 'pointer'
                     }}>
                     關閉
+                </button>
+                <button
+                    onClick={handleConfirmNotification}
+                    style={{
+                        marginTop: '20px',
+                        marginLeft: '270px',
+                        padding: '10px 20px',
+                        backgroundColor: 'green',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '5px',
+                        cursor: 'pointer'
+                    }}>
+                    確認無誤，送出通知
                 </button>
             </div>
         </div>

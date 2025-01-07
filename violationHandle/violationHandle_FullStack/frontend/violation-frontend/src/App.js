@@ -21,7 +21,7 @@ const App = () => {
     const [comparisonStatus, setComparisonStatus] = useState(null);
     // resultData: 儲存AI辨識和車輛驗證的結果
     const [resultData, setResultData] = useState(null);
-    const [showTicketPage, setShowTicketPage] = useState(false);
+    // const [showTicketPage, setShowTicketPage] = useState(false);
     const [violations, setViolations] = useState([]);
     const [tickets, setTickets] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -213,6 +213,7 @@ const App = () => {
                 });
                 setCurrentPage('ticket'); // 切換到罰單頁面
                 setProcessStatus(`罰單生成成功，罰單ID: ${response.data.ticketId}`);
+
             } else {
                 throw new Error('伺服器回應中缺少預期的數據');
             }
@@ -429,7 +430,6 @@ const App = () => {
                             onClose={handleReturnToMain}
                         />
                     )}
-
 
 
 
