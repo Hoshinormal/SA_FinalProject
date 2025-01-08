@@ -19,7 +19,6 @@ const cors = require('cors');
 // 引入各個功能模塊的路由處理器
 const path = require('path');
 const manualRoutes = require('./routes/manualRoutes');    // 人工審核路由
-// const ticketRoutes = require('./routes/ticketRoutes');    // 罰單處理路由
 const ticketRoutes = require('./api/tickets');
 
 const violationRoutes = require('./routes/violationRoutes'); // 違規處理路由

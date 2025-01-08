@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../models/db');
+const db = require('../config/database');
 
 // GET all tickets
 router.get('/', async (req, res) => {
     try {
-        const [rows] = await db.query('SELECT * FROM Ticket');
+        const [rows] = await db.query('SELECT * FROM ticketinfo');
         res.json(rows);
     } catch (error) {
         console.error('Error fetching tickets:', error);
@@ -15,11 +15,11 @@ router.get('/', async (req, res) => {
 
 // POST a new ticket
 router.post('/', async (req, res) => {
-    const { violationID, licensePlate, amount } = req.body;
+    const { violationID, licensePlate, fineamount } = req.body;
     try {
         const [result] = await db.query(
-            'INSERT INTO Ticket (ViolationID, LicensePlate, Amount) VALUES (?, ?, ?)',
-            [violationID, licensePlate, amount]
+            'INSERT INTO ticketinfo (ViolationID, LicensePlate, FineAmount) VALUES (?, ?, ?)',
+            [violationID, licensePlate, fineamount]
         );
         res.status(201).json({ id: result.insertId, message: 'Ticket added successfully' });
     } catch (error) {
@@ -47,7 +47,7 @@ router.get('/by-license', async (req, res) => {
                 v.VehicleType, 
                 v.VehicleColor 
             FROM 
-                Ticket t
+                ticketinfo t
             JOIN 
                 vehicleinfo v 
             ON 
