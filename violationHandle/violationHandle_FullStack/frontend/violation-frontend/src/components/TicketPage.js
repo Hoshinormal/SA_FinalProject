@@ -22,7 +22,7 @@ const TicketPage = ({ ticketData, onClose }) => {
     //const [showSearchPage, setShowSearchPage] = useState(false);
 
     const handleConfirmNotification =() => {
-        const newWindow = window.open('', '_blank');
+        const newWindow = window.open('http://localhost:3001/api/search-ticket', '_blank'); // 打開新分頁
         if (newWindow) {
             newWindow.document.title = '罰單查詢系統';
 

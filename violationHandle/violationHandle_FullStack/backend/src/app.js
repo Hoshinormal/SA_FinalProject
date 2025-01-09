@@ -28,8 +28,13 @@ const vehicleInfoRoutes = require('./api/vehicleInfo');   // 車輛信息路由
 const app = express();
 
 // 中間件配置
-app.use(bodyParser.json());    // 解析JSON格式的請求體
+// app.use(bodyParser.json());    // 解析JSON格式的請求體
 app.use(cors());              // 處理跨域請求
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+
 
 // API路由註冊
 app.use('/api/violations', violationRoutes);     // 違規相關API

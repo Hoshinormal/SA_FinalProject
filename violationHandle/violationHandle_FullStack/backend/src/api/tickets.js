@@ -2,6 +2,10 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/database');
 
+
+
+
+
 // GET all tickets
 router.get('/', async (req, res) => {
     try {
@@ -15,22 +19,41 @@ router.get('/', async (req, res) => {
 
 // POST a new ticket
 router.post('/', async (req, res) => {
-    const { ViolationID, LicensePlate, FineAmount,CompletionTime, NotificationStatus} = req.body;
-    if (!ViolationID) {
-        return res.status(400).json({ message: 'ViolationID 為必填項' });
-    }
+    console.log('接收到的請求數據:', req.body);
+
+    const { ViolationID, LicensePlate, FineAmount, NotificationStatus} = req.body;
+    // if (!ViolationID) {
+    //     return res.status(400).json({ message: 'ViolationID 為必填項' });
+    // }
     try {
         const [result] = await db.query(
             'INSERT INTO ticketinfo (ViolationID, LicensePlate, FineAmount, CompletionTime, NotificationStatus) VALUES (? ,?, ?,NOW(), ?)',
             [ViolationID, LicensePlate, FineAmount,NotificationStatus]
         );
-        res.status(201).json({ id: result.insertId, message: 'Ticket added successfully' });
+        console.log('Query result:', result);
+        // if (!result.insertId) {
+        //     throw new Error('資料庫未返回 insertId，請檢查資料庫設定');
+        // }
+        // if (!result || !result.insertId) {
+        //     throw new Error('insertId 未定義，請檢查資料庫設定');
+        // }
+
+        console.log('POST /api/tickets新增罰單返回數據:', result.insertId);
+        res.status(201).json({
+             TicketID: result.insertId,
+             ViolationID,
+             FineAmount,
+             CompletionTime: new Date().toISOString(), // 確保格式化
+            NotificationStatus,
+            message: '新增罰單成功'
+            });
     } catch (error) {
         
         console.error('Error adding ticket:', error);
         res.status(500).json({ message: 'Error adding ticket', error: error.message });
     }
 });
+
 
 // GET all tickets or filter by LicensePlate
 router.get('/by-license', async (req, res) => {

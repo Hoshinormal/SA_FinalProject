@@ -204,24 +204,23 @@ const App = () => {
             const requesData = {
                 ViolationID: violationID.replace('/^0+/', ''),
                 FineAmount: 1200,
-                // CompletionTime: currentDate,
                 NotificationStatus: false
             }
             console.log('發送至後端的數據:', requesData);
 
             const response = await axios.post('http://localhost:3001/api/tickets', requesData);
-            console.log('罰單生成API返回數據: ', response.data);
+            console.log('API返回數據: ', response.data);
             const newTicket = response.data;
             
             // 檢查回應中是否包含預期的數據
-            if (response.data && response.data.message) {
+            if (newTicket) {
                 // 假設後端返回的是 { message: 'Ticket generated successfully', ticketId: 123 }
-                setTicketData({newTicket});// 確保 newTicket 正確傳遞到 `TicketPage`
+                setTicketData(newTicket);
                 setCurrentPage('ticket'); // 切換到罰單頁面
-                setProcessStatus(`罰單生成成功，罰單ID: ${response.data.ticketId}`);
+                setProcessStatus(`罰單生成成功，罰單ID: ${newTicket.TicketID}`);
 
             } else {
-                throw new Error('伺服器回應中缺少預期的數據');
+                throw new Error('未獲取到有效的罰單數據');
             }
         } catch (error) {
             console.error('生成罰單時發生錯誤:', error.stack);
