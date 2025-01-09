@@ -9,7 +9,7 @@ const SearchTicketPage = () => {
     const handleSearch = async () => {
         try {
             const response = await axios.get(`http://localhost:3000/api/tickets/by-license`, {params: { licensePlate }});
-            // const response = await axios.get(`http://localhost:3000/api/tickets/by-license?licensePlate=${licensePlate}`);
+
             setSearchResult(response.data);
             setError('');
         } catch (err) {

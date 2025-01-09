@@ -2,8 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import SearchTicketPage from './SearchTicketPage'; 
 
-
-const TicketPage = ({ ticketData, onClose }) => {
+const TicketInfoPage = ({ ticketData, onClose }) => {
     // 格式化日期的函數
     const formatDate = (dateString) => {
         if (!dateString) return 'N/A';
@@ -22,7 +21,7 @@ const TicketPage = ({ ticketData, onClose }) => {
     //const [showSearchPage, setShowSearchPage] = useState(false);
 
     const handleConfirmNotification =() => {
-        const newWindow = window.open('http://localhost:3001/api/search-ticket', '_blank'); // 打開新分頁
+        const newWindow = window.open('', '_blank'); // 打開新分頁
         if (newWindow) {
             newWindow.document.title = '罰單查詢系統';
 
@@ -106,5 +105,4 @@ const TicketPage = ({ ticketData, onClose }) => {
         </div>
     );
 };
-
-export default TicketPage;
+export default TicketInfoPage;
