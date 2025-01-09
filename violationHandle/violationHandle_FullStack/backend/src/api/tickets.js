@@ -15,13 +15,13 @@ router.get('/', async (req, res) => {
 
 // POST a new ticket
 router.post('/', async (req, res) => {
-    const { ViolationID, LicensePlate, FineAmount, NotificationStatus} = req.body;
+    const { ViolationID, LicensePlate, FineAmount,CompletionTime, NotificationStatus} = req.body;
     if (!ViolationID) {
         return res.status(400).json({ message: 'ViolationID 為必填項' });
     }
     try {
         const [result] = await db.query(
-            'INSERT INTO ticketinfo (ViolationID, LicensePlate, FineAmount, NotificationStatus) VALUES (? ,?, ?, ?)',
+            'INSERT INTO ticketinfo (ViolationID, LicensePlate, FineAmount, CompletionTime, NotificationStatus) VALUES (? ,?, ?,NOW(), ?)',
             [ViolationID, LicensePlate, FineAmount,NotificationStatus]
         );
         res.status(201).json({ id: result.insertId, message: 'Ticket added successfully' });

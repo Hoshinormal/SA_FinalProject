@@ -199,28 +199,24 @@ const App = () => {
             setProcessStatus('正在生成罰單...');
             console.log(`開始生成罰單，違規ID: ${violationID}`);
             // 格式化當前日期時間為 MySQL 可接受的格式
-            const currentDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
+            // const currentDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
             
             const requesData = {
                 ViolationID: violationID.replace('/^0+/', ''),
                 FineAmount: 1200,
-                CompletionTime: currentDate,
+                // CompletionTime: currentDate,
                 NotificationStatus: false
             }
-            console.log(requesData)
-
             console.log('發送至後端的數據:', requesData);
+
             const response = await axios.post('http://localhost:3001/api/tickets', requesData);
-
-            console.log('罰單生成成功，伺服器回應:', response.data);
-
+            console.log('罰單生成API返回數據: ', response.data);
+            const newTicket = response.data;
+            
             // 檢查回應中是否包含預期的數據
             if (response.data && response.data.message) {
                 // 假設後端返回的是 { message: 'Ticket generated successfully', ticketId: 123 }
-                setTicketData({
-                    TicketID: response.data.ticketId,
-                    requesData
-                });
+                setTicketData({newTicket});// 確保 newTicket 正確傳遞到 `TicketPage`
                 setCurrentPage('ticket'); // 切換到罰單頁面
                 setProcessStatus(`罰單生成成功，罰單ID: ${response.data.ticketId}`);
 
