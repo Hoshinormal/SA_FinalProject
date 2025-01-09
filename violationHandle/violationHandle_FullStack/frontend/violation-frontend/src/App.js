@@ -7,6 +7,8 @@ import TicketPage from './components/TicketPage';
 import DataForm from './components/DataForm';
 import axios from 'axios';
 import DatabaseContent from './components/DatabaseContent';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import FinePaymentPage from './components/FinePaymentPage';
 
 // 設定違規ID的初始值
 let currentID = 1;
