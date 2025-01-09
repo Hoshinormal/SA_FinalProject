@@ -69,8 +69,14 @@ const App = () => {
             const violationResponse = await axios.post('http://localhost:3001/api/violations', formData);
 
             const { id } = violationResponse.data;
+            if (!id) {
+                throw new Error('ViolationID 為空，請檢查後端響應');
+            }
+
             setViolationID(`0${id}`);
             setProcessStatus('違規資料已上傳，ID: ' + `0${id}`);
+            console.log('Violation Response:', violationResponse.data);
+
 
             // AI辨識流程
             setProcessStatus('正在進行 AI 辨識...');
@@ -186,18 +192,25 @@ const App = () => {
     // 處理導航到罰單頁面的函數
     const handleNavigateToTicket = async () => {
         try {
+            if (!violationID || violationID === '0') {
+                throw new Error('ViolationID 為必填項，生成罰單失敗');
+            }
+
             setProcessStatus('正在生成罰單...');
             console.log(`開始生成罰單，違規ID: ${violationID}`);
-
             // 格式化當前日期時間為 MySQL 可接受的格式
             const currentDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
-
-            const response = await axios.post('http://localhost:3001/api/tickets', {
-                ViolationID: violationID.replace('0', ''),
+            
+            const requesData = {
+                ViolationID: violationID.replace('/^0+/', ''),
                 FineAmount: 1200,
                 CompletionTime: currentDate,
                 NotificationStatus: false
-            });
+            }
+            console.log(requesData)
+
+            console.log('發送至後端的數據:', requesData);
+            const response = await axios.post('http://localhost:3001/api/tickets', requesData);
 
             console.log('罰單生成成功，伺服器回應:', response.data);
 
@@ -206,10 +219,7 @@ const App = () => {
                 // 假設後端返回的是 { message: 'Ticket generated successfully', ticketId: 123 }
                 setTicketData({
                     TicketID: response.data.ticketId,
-                    ViolationID: violationID.replace('0', ''),
-                    FineAmount: 1200,
-                    CompletionTime: currentDate,
-                    NotificationStatus: false
+                    requesData
                 });
                 setCurrentPage('ticket'); // 切換到罰單頁面
                 setProcessStatus(`罰單生成成功，罰單ID: ${response.data.ticketId}`);
@@ -218,7 +228,7 @@ const App = () => {
                 throw new Error('伺服器回應中缺少預期的數據');
             }
         } catch (error) {
-            console.error('生成罰單時發生錯誤:', error);
+            console.error('生成罰單時發生錯誤:', error.stack);
             let errorMessage = '生成罰單失敗';
             if (error.response) {
                 errorMessage += `: ${error.response.status} - ${error.response.data.message || '未知錯誤'}`;
@@ -230,6 +240,7 @@ const App = () => {
             }
             setProcessStatus(errorMessage);
         }
+        
     };
 
     // 新增：返回主頁面的函數
@@ -430,13 +441,9 @@ const App = () => {
                             onClose={handleReturnToMain}
                         />
                     )}
-
-
-
                 </>
             )}
         </div>
     );
 }
-
 export default App;

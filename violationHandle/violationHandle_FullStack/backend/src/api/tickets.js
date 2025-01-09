@@ -15,23 +15,27 @@ router.get('/', async (req, res) => {
 
 // POST a new ticket
 router.post('/', async (req, res) => {
-    const { violationID, licensePlate, fineamount } = req.body;
+    const { ViolationID, LicensePlate, FineAmount, NotificationStatus} = req.body;
+    if (!ViolationID) {
+        return res.status(400).json({ message: 'ViolationID 為必填項' });
+    }
     try {
         const [result] = await db.query(
-            'INSERT INTO ticketinfo (ViolationID, LicensePlate, FineAmount) VALUES (?, ?, ?)',
-            [violationID, licensePlate, fineamount]
+            'INSERT INTO ticketinfo (ViolationID, LicensePlate, FineAmount, NotificationStatus) VALUES (? ,?, ?, ?)',
+            [ViolationID, LicensePlate, FineAmount,NotificationStatus]
         );
         res.status(201).json({ id: result.insertId, message: 'Ticket added successfully' });
     } catch (error) {
+        
         console.error('Error adding ticket:', error);
         res.status(500).json({ message: 'Error adding ticket', error: error.message });
     }
 });
 
-// GET all tickets or filter by licensePlate
+// GET all tickets or filter by LicensePlate
 router.get('/by-license', async (req, res) => {
-    const { licensePlate } = req.query;
-    if (!licensePlate) {
+    const { LicensePlate } = req.query;
+    if (!LicensePlate) {
         return res.status(400).json({ message: '車牌號碼為必填項目' });
     }
 
@@ -55,9 +59,9 @@ router.get('/by-license', async (req, res) => {
             WHERE 
                 v.LicensePlate = ?
         `;
-        const [rows] = await db.query(query, [licensePlate]);
+        const [rows] = await db.query(query, [LicensePlate]);
 
-        // 如果有 licensePlate，則添加過濾條件
+        // 如果有 LicensePlate，則添加過濾條件
         if (rows.length===0) {
             return res.status(404).json({ message: '找不到指定的罰單' });
         }
